@@ -1,11 +1,33 @@
 package main.java.io.saqaStudio.com;
 
 import com.badlogic.gdx.Game;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
 /** {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms. */
 public class MatchThree extends Game {
+
+    private Skin skin;
+    private Sound click;
+    private Stage stage;
+    private GameWindow window;
+    private TextureAtlas atlas;
+
     @Override
     public void create() {
+        skin = new Skin(Gdx.files.internal("skin/OS Eight.json"));
+        atlas = new TextureAtlas("teture/Texture.atlas");
+        click = Gdx.audio.newSound(Gdx.files.internal("sound/menu_click.ogg"));
+        stage = new Stage();
+        Gdx.input.setInputProcessor(stage);
+        window = new GameWindow("Match Three", skin);
+        window.setMovable(stage);
+        window.setFillParent(true);
+        stage.addActor(window);
         setScreen(new FirstScreen());
     }
 }
