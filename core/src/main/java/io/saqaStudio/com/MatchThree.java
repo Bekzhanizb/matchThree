@@ -30,4 +30,22 @@ public class MatchThree extends Game {
         stage.addActor(window);
         setScreen(new FirstScreen());
     }
+    public void playClick() {
+        click.play(0.2f, 3f,0);
+        try {
+            Thread.sleep(100);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public TextureAtlas getTexture() {
+        return atlas;
+    }
+    public GameWindow getWindow() {
+        return window;
+    }
+    public Skin getSkin() {
+        return skin;
+    }
 }
