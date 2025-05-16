@@ -8,7 +8,7 @@ public class Tile extends Image {
 
     public int type = -1;
 
-    public void inti(TextureRegion sprite, int index) {
+    public void init(TextureRegion sprite, int index) {
         setBounds(getX(index), getY(index), getWidth(), getHeight());
         setDrawable(new TextureRegionDrawable(sprite));
         this.type = index;

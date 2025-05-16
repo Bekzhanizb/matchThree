@@ -5,6 +5,7 @@ import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Interpolation;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
@@ -115,6 +116,108 @@ public class Field extends Table implements Disposable{
             }
         }
     };
+
+    private void swap(int index1, int index2) {
+        activeTiles.swap(index1, index2);
+        swapActor(index1, index2);
+    }
+
+    private void update() {
+        clearChildren();
+        int i = 0;
+        for (Tile tile : activeTiles) {
+            if (tile.type == -1) {
+                score++;
+                int num = MathUtils.random(0, 6);
+                tile.init(entities.get(num), num);
+                tile.addAction(sequence(fadeIn(0.25f)));
+            }
+            if (i % RANK == 0)
+                row();
+            add(tile);
+            i++;
+        }
+    }
+
+    private void moveDown() {
+        for (int i = RANK - 1; i >= 0; i--)
+            for (int j = 0; j < RANK; j++)
+                if (activeTiles.get(j + i * RANK).type == -1)
+                    for (int n = i; n >= 0; n--)
+                        if (activeTiles.get(j + n * RANK).type != -1) {
+                            swap(j + n * RANK, j + i * RANK);
+                            break;
+                        }
+
+    }
+
+    private void findMatches() {
+        int matches;
+        int colorToMatch;
+        boolean hasMatch = false;
+        for (int i = 0; i < RANK; i++) {
+            colorToMatch = activeTiles.get(i * RANK).type;
+            matches = 1;
+            for (int j = 1; j < RANK; j++) {
+                if (activeTiles.get(j + i * RANK).type == colorToMatch) {
+                    matches++;
+                } else {
+                    colorToMatch = activeTiles.get(j + i * RANK).type;
+                    if (matches >= 3) {
+                        hasMatch = true;
+                        for (int j2 = j - 1; j2 >= j - matches; j2--) {
+                            activeTiles.get(j2 + i * RANK).type = -1;
+                        }
+                    }
+                    matches = 1;
+                }
+            }
+            if (matches >= 3) {
+                hasMatch = true;
+                for (int j = RANK - 1; j >= RANK - matches; j--) {
+                    activeTiles.get(j + i * RANK).type = -1;
+                }
+            }
+        }
+        //checking columns
+        for (int j = 0; j < RANK; j++) {
+            colorToMatch = activeTiles.get(j).type;
+            matches = 1;
+            for (int i = 1; i < RANK; i++) {
+                if (activeTiles.get(j + i * RANK).type == colorToMatch) {
+                    matches++;
+                } else {
+                    colorToMatch = activeTiles.get(j + i * RANK).type;
+                    if (matches >= 3) {
+                        hasMatch = true;
+                        for (int i2 = i - 1; i2 >= i - matches; i2--) {
+                            activeTiles.get(j + i2 * RANK).type = -1;
+                        }
+                    }
+                    matches = 1;
+                }
+            }
+            if (matches >= 3) {
+                hasMatch = true;
+                for (int i = RANK - 1; i >= RANK - matches; i--) {
+                    activeTiles.get(j + i * RANK).type = -1;
+                }
+            }
+        }
+        if (hasMatch) {
+            //TODO:  GameServices.playSwapSuccess();
+
+            int count = 1;
+            for (Tile tile : activeTiles.select((tile) -> tile.type == -1)) {
+                if (count % 3 == 0)
+                    //TODO: ----------------------------------------afterMatch
+                    tile.addAction(sequence(fadeOut(0.25f)));
+                else
+                    tile.addAction(fadeOut(0.25f));
+                count++;
+            }
+        }
+    }
 
     private boolean hasMatches() {
         int matches;
