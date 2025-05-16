@@ -116,6 +116,50 @@ public class Field extends Table implements Disposable{
         }
     };
 
+    private boolean hasMatches() {
+        int matches;
+        int colorToMatch;
+        boolean hasMatch = false;
+        for (int i = 0; i < RANK; i++) {
+            colorToMatch = activeTiles.get(i * RANK).type;
+            matches = 1;
+            for (int j = 1; j < RANK; j++) {
+                if (activeTiles.get(j + i * RANK).type == colorToMatch) {
+                    matches++;
+                } else {
+                    colorToMatch = activeTiles.get(j + i * RANK).type;
+                    if (matches >= 3) {
+                        hasMatch = true;
+
+                    }
+                    matches = 1;
+                }
+            }
+            if (matches >= 3) {
+                hasMatch = true;
+            }
+        }
+        for (int j = 0; j < RANK; j++) {
+            colorToMatch = activeTiles.get(j).type;
+            matches = 1;
+            for (int i = 1; i < RANK; i++) {
+                if (activeTiles.get(j + i * RANK).type == colorToMatch) {
+                    matches++;
+                } else {
+                    colorToMatch = activeTiles.get(j + i * RANK).type;
+                    if (matches >= 3) {
+                        hasMatch = true;
+                    }
+                    matches = 1;
+                }
+            }
+            if (matches >= 3) {
+                hasMatch = true;
+            }
+        }
+        return hasMatch;
+    }
+
     @Override
     public void dispose() {
 
