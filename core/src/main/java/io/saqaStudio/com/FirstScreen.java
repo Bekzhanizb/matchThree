@@ -1,4 +1,4 @@
-package io.saqaStudio.com;
+package main.java.io.saqaStudio.com;
 
 import com.badlogic.gdx.Screen;
 
