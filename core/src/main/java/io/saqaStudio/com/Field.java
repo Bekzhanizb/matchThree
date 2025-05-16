@@ -30,6 +30,8 @@ public class Field extends Table implements Disposable{
     private final Sound wrongSwap = Gdx.audio.newSound(Gdx.files.internal("sound/swap_wrong.ogg"));
     private final Sound successSwap = Gdx.audio.newSound(Gdx.files.internal("sound/swap_success.ogg"));
 
+    private MatchListener listener;
+
     public Field(TextureRegion background, Array<TextureAtlas.AtlasRegion> sprites) {
         defaults().width(80).height(80);
         setBounds(0, 0, 640, 640);
@@ -44,7 +46,7 @@ public class Field extends Table implements Disposable{
 
         }
 
-        //TODO: Add findMatches method
+        findMatches();
     }
 
     private final ClickListener clickListener = new ClickListener() {
@@ -54,7 +56,7 @@ public class Field extends Table implements Disposable{
         final Action afterSwap = new Action() {
             @Override
             public boolean act(float delta) {
-                // TODO: Add findMatches method
+                findMatches();
                 return true;
             }
         };
@@ -68,6 +70,8 @@ public class Field extends Table implements Disposable{
                 return true;
             }
         };
+
+
 
         @Override
         public void clicked(InputEvent event, float x, float y) {
@@ -83,8 +87,7 @@ public class Field extends Table implements Disposable{
 
                 activeTiles.swap(tileIndex1, tileIndex2);
                 if ((tileIndex1 == tileIndex2 - 1 || tileIndex1 == tileIndex2 + 1 ||
-                    // TODO: Add hasMatches method -------------------------------------&& hasMathces()
-                    tileIndex1 == tileIndex2 + RANK || tileIndex1 == tileIndex2 - RANK)) {
+                    tileIndex1 == tileIndex2 + RANK || tileIndex1 == tileIndex2 - RANK && hasMatches())) {
                     swapActor(tileIndex1, tileIndex2);
                     target.addAction(moveTo(firstClick.getX(), firstClick.getY(), 0.2f));
                     firstClick.addAction(sequence(moveTo(target.getX(), target.getY(), 0.2f), afterSwap));
@@ -139,6 +142,15 @@ public class Field extends Table implements Disposable{
         }
     }
 
+    public void setMatchListener(MatchListener listener) {
+        this.listener = listener;
+    }
+
+    private void notifyMatch(int matched) {
+        if (listener != null)
+            listener.onMatch(matched);
+    }
+
     private void moveDown() {
         for (int i = RANK - 1; i >= 0; i--)
             for (int j = 0; j < RANK; j++)
@@ -165,6 +177,7 @@ public class Field extends Table implements Disposable{
                     colorToMatch = activeTiles.get(j + i * RANK).type;
                     if (matches >= 3) {
                         hasMatch = true;
+                        notifyMatch(matches);
                         for (int j2 = j - 1; j2 >= j - matches; j2--) {
                             activeTiles.get(j2 + i * RANK).type = -1;
                         }
@@ -174,12 +187,12 @@ public class Field extends Table implements Disposable{
             }
             if (matches >= 3) {
                 hasMatch = true;
+                notifyMatch(matches);
                 for (int j = RANK - 1; j >= RANK - matches; j--) {
                     activeTiles.get(j + i * RANK).type = -1;
                 }
             }
         }
-        //checking columns
         for (int j = 0; j < RANK; j++) {
             colorToMatch = activeTiles.get(j).type;
             matches = 1;
@@ -190,6 +203,7 @@ public class Field extends Table implements Disposable{
                     colorToMatch = activeTiles.get(j + i * RANK).type;
                     if (matches >= 3) {
                         hasMatch = true;
+                        notifyMatch(matches);
                         for (int i2 = i - 1; i2 >= i - matches; i2--) {
                             activeTiles.get(j + i2 * RANK).type = -1;
                         }
@@ -199,6 +213,7 @@ public class Field extends Table implements Disposable{
             }
             if (matches >= 3) {
                 hasMatch = true;
+                notifyMatch(matches);
                 for (int i = RANK - 1; i >= RANK - matches; i--) {
                     activeTiles.get(j + i * RANK).type = -1;
                 }
@@ -210,13 +225,26 @@ public class Field extends Table implements Disposable{
             int count = 1;
             for (Tile tile : activeTiles.select((tile) -> tile.type == -1)) {
                 if (count % 3 == 0)
-                    //TODO: ----------------------------------------afterMatch
-                    tile.addAction(sequence(fadeOut(0.25f)));
+                    tile.addAction(sequence(fadeOut(0.25f), afterMatch));
                 else
                     tile.addAction(fadeOut(0.25f));
                 count++;
             }
         }
+    }
+
+    private final Action afterMatch = new Action() {
+        @Override
+        public boolean act(float delta) {
+            moveDown();
+            update();
+            findMatches();
+            return true;
+        }
+    };
+
+    public int getScore() {
+        return score;
     }
 
     private boolean hasMatches() {
@@ -233,6 +261,7 @@ public class Field extends Table implements Disposable{
                     colorToMatch = activeTiles.get(j + i * RANK).type;
                     if (matches >= 3) {
                         hasMatch = true;
+                        notifyMatch(matches);
 
                     }
                     matches = 1;
@@ -240,6 +269,7 @@ public class Field extends Table implements Disposable{
             }
             if (matches >= 3) {
                 hasMatch = true;
+                notifyMatch(matches);
             }
         }
         for (int j = 0; j < RANK; j++) {
@@ -252,12 +282,14 @@ public class Field extends Table implements Disposable{
                     colorToMatch = activeTiles.get(j + i * RANK).type;
                     if (matches >= 3) {
                         hasMatch = true;
+                        notifyMatch(matches);
                     }
                     matches = 1;
                 }
             }
             if (matches >= 3) {
                 hasMatch = true;
+                notifyMatch(matches);
             }
         }
         return hasMatch;

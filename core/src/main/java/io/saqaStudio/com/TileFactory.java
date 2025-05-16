@@ -11,7 +11,7 @@ public class TileFactory {
         int index = MathUtils.random(0, entities.size - 1);
         Tile tile = new Tile();
         tile.addListener(clickListener);
-        tile.inti(entities.get(index), index);
+        tile.init(entities.get(index), index);
         return tile;
     }
 }
