@@ -3,7 +3,6 @@ package main.java.io.saqaStudio.com;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
-import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -17,16 +16,21 @@ public class MatchThree extends Game {
     private Stage stage;
     private GameWindow window;
     private TextureAtlas atlas;
+    private final WindowController controller;
+
+    public MatchThree(WindowController controller) {
+        this.controller = controller;
+    }
     //TODO: Add File Handle Object
 
     @Override
     public void create() {
         skin = new Skin(Gdx.files.internal("skin/OS Eight.json"));
-        atlas = new TextureAtlas("teture/Texture.atlas");
+        atlas = new TextureAtlas("texture/Textures.atlas");
         click = Gdx.audio.newSound(Gdx.files.internal("sound/menu_click.ogg"));
         stage = new Stage();
         Gdx.input.setInputProcessor(stage);
-        window = new GameWindow("Match Three", skin);
+        window = new GameWindow("Match Three", skin, controller);
         window.setMovable(stage);
         window.setFillParent(true);
         stage.addActor(window);

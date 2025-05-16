@@ -1,36 +1,36 @@
 package main.java.io.saqaStudio.com;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 
-import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Window;
-import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Graphics;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.DragListener;
 import com.badlogic.gdx.utils.Scaling;
 
 public class GameWindow extends Window {
 
-    public GameWindow(String title, Skin skin) {
+    private final WindowController controller;
+
+    public GameWindow(String title, Skin skin, WindowController controller) {
         super(title, skin);
+        this.controller = controller;
 
         getTitleTable().clearChildren();
         getTitleTable().defaults().space(5.0f);
 
-        Button button = new Button(skin, "Close");
+        Button button = new Button(skin, "close");
 
         getTitleTable().add(button);
 
         Image image = new Image(skin, "title-bar-bg");
-        image.setScale(0.5f);
+        image.setScaling(Scaling.stretchX);
         getTitleTable().add(image).growX();
 
-        Label label = new Label("Math Three Game", skin);
+        Label label = new Label("Match Three Game", skin);
         label.setFontScale(1.15f);
-        getTitleTable().add(label).growX();
+        getTitleTable().add(label).padLeft(20.0f).padRight(20.0f);
 
         image = new Image(skin, "title-bar-bg");
         image.setScaling(Scaling.stretchX);
@@ -55,18 +55,13 @@ public class GameWindow extends Window {
         getTitleTable().addListener(new DragListener(){
             @Override
             public void drag(InputEvent event, float x, float y, int pointer) {
-                Lwjgl3Window mainWindow = ((Lwjgl3Graphics) Gdx.graphics).getWindow();
+                Vector2 current = stage.stageToScreenCoordinates(new Vector2(x, y));
+                int deltaX = (int)(current.x - position.x);
+                int deltaY = (int)(current.y - position.y);
 
-                int thisX = mainWindow.getPositionX();
-                int thisY = mainWindow.getPositionY();
+                controller.moveWindow(deltaX, deltaY);
 
-                int movedX = (int) ((thisX + stage.stageToScreenCoordinates(new Vector2(x, y)).x) - (thisX + position.x));
-                int movedY = (int) ((thisY + stage.stageToScreenCoordinates(new Vector2(x, y)).y) - (thisY + position.y));
-
-                int X = thisX + movedX;
-                int Y = thisY + movedY;
-
-                mainWindow.setPosition(X, Y);
+                position.set(current);
             }
         });
     }
