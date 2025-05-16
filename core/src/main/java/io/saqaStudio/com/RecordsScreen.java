@@ -34,7 +34,7 @@ public class RecordsScreen extends ScreenAdapter {
         scrollPane.setFadeScrollBars(false);
         scrollPane.setVariableSizeKnobs(false);
 
-//        TODO: readRecords();
+        readRecords();
         Label recordLabel = new Label("No winners yet...", game.getSkin());
         recordLabel.setAlignment(Align.center);
         if (!recordsMap.isEmpty()) {
@@ -90,24 +90,22 @@ public class RecordsScreen extends ScreenAdapter {
         window.add(mainTable);
     }
 
-//TODO:    private void readRecords() {
-//        String data = GameServices.loadRecords();
-//        if (!data.isEmpty()) {
-//            String[] records = data.split("\\n");
-//            for (int i = 0; i < records.length - 1; i += 2) {
-//                try {
-//                    int time = Integer.parseInt(records[i]);
-//                    String name = records[i + 1];
-//                    recordsMap.put(time, name);
-//                } catch (Exception e) {
-//                    // skip malformed line pairs
-//                }
-//            }
-//            // sort & reverse as before...
-//            recordsMap.orderedKeys().sort();
-//            recordsMap.orderedKeys().reverse();
-//        }
-//    }
+    private void readRecords() {
+        String data = GameServices.loadRecords();
+        if (!data.isEmpty()) {
+            String[] records = data.split("\\n");
+            for (int i = 0; i < records.length - 1; i += 2) {
+                try {
+                    int time = Integer.parseInt(records[i]);
+                    String name = records[i + 1];
+                    recordsMap.put(time, name);
+                } catch (Exception e) {
+                }
+            }
+            recordsMap.orderedKeys().sort();
+            recordsMap.orderedKeys().reverse();
+        }
+    }
 
 
 

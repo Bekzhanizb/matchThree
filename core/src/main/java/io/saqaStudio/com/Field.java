@@ -75,7 +75,7 @@ public class Field extends Table implements Disposable{
 
         @Override
         public void clicked(InputEvent event, float x, float y) {
-            // TODO: Add GameServices
+            GameServices.playClick();
             Tile target = (Tile) event.getTarget();
 
             if (firstClick != null) {
@@ -216,7 +216,7 @@ public class Field extends Table implements Disposable{
             }
         }
         if (hasMatch) {
-            //TODO:  GameServices.playSwapSuccess();
+            GameServices.playSwapSuccess();
 
             int count = 1;
             for (Tile tile : activeTiles.select((tile) -> tile.type == -1)) {

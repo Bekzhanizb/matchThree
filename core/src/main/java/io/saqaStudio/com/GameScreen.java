@@ -96,13 +96,13 @@ public class GameScreen extends ScreenAdapter {
                                 saveBtn.addListener(new ChangeListener() {
                                     @Override
                                     public void changed(ChangeEvent event, Actor actor) {
-                                        //TODO: GameServices.playClick();
+                                        GameServices.playClick();
 
                                         String name   = textField.getText().trim();
-                                        //TODO: String oldRec = GameServices.loadRecords();
-                                        //TODO: String entry  = field.getScore() + "\n" + name + (oldRec.isEmpty() ? "" : "\n" + oldRec);
+                                        String oldRec = GameServices.loadRecords();
+                                        String entry  = field.getScore() + "\n" + name + (oldRec.isEmpty() ? "" : "\n" + oldRec);
 
-                                        //TODO: GameServices.saveRecords(entry);
+                                        GameServices.saveRecords(entry);
 
                                         window.removeActor(mainTable);
                                         game.setScreen(new MenuScreen(game));

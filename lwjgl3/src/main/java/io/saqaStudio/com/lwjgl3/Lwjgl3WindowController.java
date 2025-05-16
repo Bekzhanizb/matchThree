@@ -5,7 +5,6 @@ import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Graphics;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Window;
 import main.java.io.saqaStudio.com.WindowController;
 
-// lwjgl3:
 public class Lwjgl3WindowController implements WindowController {
     @Override
     public void moveWindow(int deltaX, int deltaY) {

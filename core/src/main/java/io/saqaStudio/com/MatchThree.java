@@ -24,7 +24,6 @@ public class MatchThree extends Game {
     public MatchThree(WindowController controller) {
         this.controller = controller;
     }
-    //TODO: Add File Handle Object
 
     @Override
     public void create() {
