@@ -40,7 +40,7 @@ public class MenuScreen extends ScreenAdapter {
             public void changed(ChangeEvent changeEvent, Actor actor) {
                 game.playClick();
                 window.removeActor(table);
-                //TODO: setScreen GameScreen
+                game.setScreen(new GameScreen(game));
             }
 
         });

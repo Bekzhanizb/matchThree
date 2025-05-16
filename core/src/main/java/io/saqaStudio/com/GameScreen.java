@@ -137,4 +137,26 @@ public class GameScreen extends ScreenAdapter {
 
         window.add(mainTable);
     }
+
+    private float time = 0;
+
+    @Override
+    public void render(float delta) {
+        time += delta;
+        if (time >= 1) {
+            timeBar.setValue(timeBar.getValue() - 1);
+            time = 0;
+        }
+        scoreCounter.setText(field.getScore());
+    }
+
+    @Override
+    public void hide() {
+        dispose();
+    }
+
+    @Override
+    public void dispose() {
+        field.dispose();
+    }
 }

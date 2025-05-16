@@ -177,7 +177,6 @@ public class Field extends Table implements Disposable{
                     colorToMatch = activeTiles.get(j + i * RANK).type;
                     if (matches >= 3) {
                         hasMatch = true;
-                        notifyMatch(matches);
                         for (int j2 = j - 1; j2 >= j - matches; j2--) {
                             activeTiles.get(j2 + i * RANK).type = -1;
                         }
@@ -187,7 +186,6 @@ public class Field extends Table implements Disposable{
             }
             if (matches >= 3) {
                 hasMatch = true;
-                notifyMatch(matches);
                 for (int j = RANK - 1; j >= RANK - matches; j--) {
                     activeTiles.get(j + i * RANK).type = -1;
                 }
@@ -203,7 +201,6 @@ public class Field extends Table implements Disposable{
                     colorToMatch = activeTiles.get(j + i * RANK).type;
                     if (matches >= 3) {
                         hasMatch = true;
-                        notifyMatch(matches);
                         for (int i2 = i - 1; i2 >= i - matches; i2--) {
                             activeTiles.get(j + i2 * RANK).type = -1;
                         }
@@ -213,7 +210,6 @@ public class Field extends Table implements Disposable{
             }
             if (matches >= 3) {
                 hasMatch = true;
-                notifyMatch(matches);
                 for (int i = RANK - 1; i >= RANK - matches; i--) {
                     activeTiles.get(j + i * RANK).type = -1;
                 }
