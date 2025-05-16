@@ -3,6 +3,7 @@ package main.java.io.saqaStudio.com;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -17,6 +18,8 @@ public class MatchThree extends Game {
     private GameWindow window;
     private TextureAtlas atlas;
     private final WindowController controller;
+
+    private FileHandle recordsFile;
 
     public MatchThree(WindowController controller) {
         this.controller = controller;
@@ -34,6 +37,7 @@ public class MatchThree extends Game {
         window.setMovable(stage);
         window.setFillParent(true);
         stage.addActor(window);
+        recordsFile = Gdx.files.local("Records");
         setScreen(new MenuScreen(this));
     }
     public void playClick() {
@@ -54,7 +58,9 @@ public class MatchThree extends Game {
     public Skin getSkin() {
         return skin;
     }
-    //TODO: Add Records
+    public FileHandle getRecordsFile() {
+        return recordsFile;
+    }
 
 
     @Override
