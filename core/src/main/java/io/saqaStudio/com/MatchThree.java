@@ -4,6 +4,7 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -16,6 +17,7 @@ public class MatchThree extends Game {
     private Stage stage;
     private GameWindow window;
     private TextureAtlas atlas;
+    //TODO: Add File Handle Object
 
     @Override
     public void create() {
@@ -28,7 +30,7 @@ public class MatchThree extends Game {
         window.setMovable(stage);
         window.setFillParent(true);
         stage.addActor(window);
-        setScreen(new FirstScreen());
+        setScreen(new MenuScreen(this));
     }
     public void playClick() {
         click.play(0.2f, 3f,0);
@@ -47,5 +49,25 @@ public class MatchThree extends Game {
     }
     public Skin getSkin() {
         return skin;
+    }
+    //TODO: Add Records
+
+
+    @Override
+    public void render() {
+        super.render();
+        Gdx.gl.glClearColor(1, 1, 1, 1);
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        stage.act(Gdx.graphics.getDeltaTime());
+        stage.draw();
+    }
+
+    @Override
+    public void dispose() {
+        super.dispose();
+        atlas.dispose();
+        skin.dispose();
+        stage.dispose();
+        click.dispose();
     }
 }
