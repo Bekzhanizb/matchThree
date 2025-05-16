@@ -7,6 +7,7 @@ import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.utils.Align;
 
 public class MenuScreen extends ScreenAdapter {
     private final MatchThree game;
@@ -26,10 +27,14 @@ public class MenuScreen extends ScreenAdapter {
         clouds.setFillParent(true);
         clouds.addAction(Actions.forever(Actions.sequence(Actions.moveBy(20, 0, 3f),Actions.moveBy(-20, 0, 3f),Actions.moveBy(-20, 0, 3f))));
 
-        //TODO: Add Animated Image
+        AnimatedImage gemAnimation = AnimatedImage.getInstance(0.05f, game.getTexture().findRegions("gem"));
+
+        gemAnimation.setSize(200,200);
+        gemAnimation.setPosition(450, 180, Align.center);
 
         Group backSplash = new Group();
         backSplash.addActor(clouds);
+        backSplash.addActor(gemAnimation);
         table.add(backSplash).prefSize(900, 360).padBottom(30);
         table.row();
 
