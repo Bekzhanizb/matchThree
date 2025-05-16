@@ -1,0 +1,52 @@
+buildscript {
+  repositories {
+    gradlePluginPortal()
+    mavenCentral()
+    google()
+  }
+  dependencies {
+    // Here we can connect Cradle plugins, if necessary
+  }
+}
+
+allprojects {
+  apply plugin: 'eclipse'
+  apply plugin: 'idea'
+
+  idea {
+    module {
+      outputDir file('build/classes/java/main')
+      testOutputDir file('build/classes/java/test')
+    }
+  }
+}
+
+subprojects {
+  apply plugin: 'java-library'
+
+  java {
+    toolchain {
+      languageVersion = JavaLanguageVersion.of(17)
+    }
+  }
+
+  version = '1.0'
+  ext {
+    appName = "RuneRush"
+    gdxVersion = '1.13.1'
+    ashleyVersion = '1.7.4'
+    aiVersion = '1.8.2'
+  }
+
+  repositories {
+    mavenCentral()
+    google()
+    maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
+    maven { url "https://s01.oss.sonatype.org/content/repositories/snapshots/" }
+    maven { url "https://jitpack.io" }
+  }
+
+  compileJava {
+    options.incremental = true
+  }
+}
