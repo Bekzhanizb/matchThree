@@ -23,7 +23,7 @@ import static com.badlogic.gdx.scenes.scene2d.actions.Actions.moveTo;
 public class Field extends Table implements Disposable{
 
     private int score = 0;
-    private static final int RANK = 8;
+    private final int RANK = 8;
     private final Array<TextureAtlas.AtlasRegion> entities;
     private final Array<Tile> activeTiles = new Array<>(64);
     private final Sound click = Gdx.audio.newSound(Gdx.files.internal("sound/touch_glass.ogg"));
@@ -38,7 +38,7 @@ public class Field extends Table implements Disposable{
         setBackground(new TextureRegionDrawable(background));
         entities = sprites;
         for(int i =0; i < RANK *RANK; i++){
-            Tile tile = TileFactory.creteRandomTile(entities, clickListener);
+            Tile tile = TileFactory.createRandomTile(entities, clickListener);
             activeTiles.add(tile);
 
             if(i % RANK == 0) row();
@@ -47,6 +47,18 @@ public class Field extends Table implements Disposable{
         }
 
         findMatches();
+    }
+
+    public Array<Tile> getActiveTiles() {
+        return activeTiles;
+    }
+
+    public int getRank() {
+        return RANK;
+    }
+
+    public Action getAfterMatch() {
+        return afterMatch;
     }
 
     private final ClickListener clickListener = new ClickListener() {
@@ -93,13 +105,19 @@ public class Field extends Table implements Disposable{
                     firstClick.addAction(sequence(moveTo(target.getX(), target.getY(), 0.2f), afterSwap));
                 } else {
                     wrongSwap.play(0.2f, 1f, 0);
-                    activeTiles.swap(tileIndex1, tileIndex2);
-                    target.addAction(sequence(moveTo(firstClick.getX(), firstClick.getY(), 0.1f),
-                        moveTo(target.getX(), target.getY(), 0.1f)));
-                    firstClick.addAction(sequence(moveTo(target.getX(), target.getY(), 0.1f),
-                        moveTo(firstClick.getX(), firstClick.getY(), 0.1f), afterSwap));
                 }
             }
+
+            if (target.hasBehavior(BombTileBehavior.class)) {
+                if (!target.isArmed()) {
+                    target.arm(); // первое нажатие
+                } else {
+                    target.activate(Field.this); // второе нажатие — взрыв
+                    target.disarm();
+                }
+                return;
+            }
+
 
             count++;
             firstClick = target;
@@ -290,6 +308,15 @@ public class Field extends Table implements Disposable{
         }
         return hasMatch;
     }
+    public boolean isValidPosition(int x, int y) {
+        return x >= 0 && y >= 0 && x < RANK && y < RANK;
+    }
+
+    public void removeTile(int x, int y) {
+        activeTiles.get(x + y * RANK).type = -1;
+    }
+
+
 
     @Override
     public void dispose() {
