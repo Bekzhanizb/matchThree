@@ -144,7 +144,7 @@ public class Field extends Table implements Disposable{
         swapActor(index1, index2);
     }
 
-    private void update() {
+    protected void update() {
         clearChildren();
         int i = 0;
         for (Tile tile : activeTiles) {
@@ -183,7 +183,7 @@ public class Field extends Table implements Disposable{
             listener.onMatch(matched);
     }
 
-    private void moveDown() {
+    protected void moveDown() {
         for (int i = RANK - 1; i >= 0; i--)
             for (int j = 0; j < RANK; j++)
                 if (activeTiles.get(j + i * RANK).type == -1)
@@ -195,58 +195,77 @@ public class Field extends Table implements Disposable{
 
     }
 
-    private void findMatches() {
+    protected void findMatches() {
         int matches;
         int colorToMatch;
         boolean hasMatch = false;
+
+        // Горизонтальные совпадения
         for (int i = 0; i < RANK; i++) {
             colorToMatch = activeTiles.get(i * RANK).type;
             matches = 1;
             for (int j = 1; j < RANK; j++) {
-                if (activeTiles.get(j + i * RANK).type == colorToMatch) {
+                Tile current = activeTiles.get(j + i * RANK);
+                if (current.type == colorToMatch) {
                     matches++;
                 } else {
-                    colorToMatch = activeTiles.get(j + i * RANK).type;
                     if (matches >= 3) {
                         hasMatch = true;
                         for (int j2 = j - 1; j2 >= j - matches; j2--) {
-                            activeTiles.get(j2 + i * RANK).type = -1;
+                            Tile t = activeTiles.get(j2 + i * RANK);
+                            if (!t.hasBehavior(BombTileBehavior.class)) {
+                                t.type = -1;
+                            }
                         }
                     }
+                    colorToMatch = current.type;
                     matches = 1;
                 }
             }
             if (matches >= 3) {
                 hasMatch = true;
                 for (int j = RANK - 1; j >= RANK - matches; j--) {
-                    activeTiles.get(j + i * RANK).type = -1;
+                    Tile t = activeTiles.get(j + i * RANK);
+                    if (!t.hasBehavior(BombTileBehavior.class)) {
+                        t.type = -1;
+                    }
                 }
             }
         }
+
+        // Вертикальные совпадения
         for (int j = 0; j < RANK; j++) {
             colorToMatch = activeTiles.get(j).type;
             matches = 1;
             for (int i = 1; i < RANK; i++) {
-                if (activeTiles.get(j + i * RANK).type == colorToMatch) {
+                Tile current = activeTiles.get(j + i * RANK);
+                if (current.type == colorToMatch) {
                     matches++;
                 } else {
-                    colorToMatch = activeTiles.get(j + i * RANK).type;
                     if (matches >= 3) {
                         hasMatch = true;
                         for (int i2 = i - 1; i2 >= i - matches; i2--) {
-                            activeTiles.get(j + i2 * RANK).type = -1;
+                            Tile t = activeTiles.get(j + i2 * RANK);
+                            if (!t.hasBehavior(BombTileBehavior.class)) {
+                                t.type = -1;
+                            }
                         }
                     }
+                    colorToMatch = current.type;
                     matches = 1;
                 }
             }
             if (matches >= 3) {
                 hasMatch = true;
                 for (int i = RANK - 1; i >= RANK - matches; i--) {
-                    activeTiles.get(j + i * RANK).type = -1;
+                    Tile t = activeTiles.get(j + i * RANK);
+                    if (!t.hasBehavior(BombTileBehavior.class)) {
+                        t.type = -1;
+                    }
                 }
             }
         }
+
         if (hasMatch) {
             GameServices.playSwapSuccess();
 
@@ -260,6 +279,7 @@ public class Field extends Table implements Disposable{
             }
         }
     }
+
 
     private final Action afterMatch = new Action() {
         @Override

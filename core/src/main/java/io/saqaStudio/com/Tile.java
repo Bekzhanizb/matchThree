@@ -40,9 +40,7 @@ public class Tile extends Image {
         this.type = index;
     }
     public boolean hasBehavior(Class<? extends TileBehavior> clazz) {
-        boolean match = behavior != null && behavior.getClass() == clazz;
-        System.out.println("Tile type: " + type + " | behavior: " + (behavior != null ? behavior.getClass().getSimpleName() : "null") + " | match: " + match);
-        return match;
+        return behavior != null && behavior.getClass() == clazz;
     }
 
 }

@@ -24,5 +24,10 @@ public class BombTileBehavior implements TileBehavior {
             com.badlogic.gdx.scenes.scene2d.actions.Actions.fadeOut(0.25f),
             field.getAfterMatch()
         ));
+
+        field.moveDown();
+        field.update();
+        field.findMatches();
+
     }
 }
