@@ -16,7 +16,7 @@ public class TileFactory {
         int index = MathUtils.random(0, entities.size - 1);
         Tile tile = new Tile();
 
-        if (MathUtils.randomBoolean(0.1f)) {
+        if (MathUtils.randomBoolean(0.03f)) {
             tile.setBehavior(new BombTileBehavior());
 
             Texture bombTexture = new Texture(Gdx.files.internal("assets/texture/bomb.png"));

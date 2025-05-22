@@ -34,13 +34,15 @@ public class Tile extends Image {
         return armed;
     }
 
-    public boolean hasBehavior(Class<? extends TileBehavior> clazz) {
-        return behavior != null && behavior.getClass() == clazz;
-    }
-
     public void init(TextureRegion sprite, int index){
         setBounds(getX(), getY(), getWidth(), getHeight());
         setDrawable(new TextureRegionDrawable(sprite));
         this.type = index;
     }
+    public boolean hasBehavior(Class<? extends TileBehavior> clazz) {
+        boolean match = behavior != null && behavior.getClass() == clazz;
+        System.out.println("Tile type: " + type + " | behavior: " + (behavior != null ? behavior.getClass().getSimpleName() : "null") + " | match: " + match);
+        return match;
+    }
+
 }

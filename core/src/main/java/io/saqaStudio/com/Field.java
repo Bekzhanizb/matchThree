@@ -2,6 +2,7 @@ package main.java.io.saqaStudio.com;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Interpolation;
@@ -149,16 +150,29 @@ public class Field extends Table implements Disposable{
         for (Tile tile : activeTiles) {
             if (tile.type == -1) {
                 score++;
-                int num = MathUtils.random(0, 6);
-                tile.init(entities.get(num), num);
+                int num = MathUtils.random(0, entities.size - 1);
+
+                if (MathUtils.randomBoolean(0.1f)) {
+                    tile.setBehavior(new BombTileBehavior());
+                    Texture bombTexture = new Texture(Gdx.files.internal("assets/texture/bomb.png"));
+                    TextureRegion bombRegion = new TextureRegion(bombTexture);
+                    tile.init(bombRegion, 3);
+                } else {
+                    tile.setBehavior(new NormalTileBehavior());
+                    tile.init(entities.get(num), num);
+                }
+
+                tile.addListener(clickListener);
                 tile.addAction(sequence(fadeIn(0.25f)));
             }
+
             if (i % RANK == 0)
                 row();
             add(tile);
             i++;
         }
     }
+
 
     public void setMatchListener(MatchListener listener) {
         this.listener = listener;
